@@ -24,12 +24,12 @@ pipeline{
                }
            }
            stage("DEPLOY"){
-               agent any
+              
             
                steps{
                    script{
                        echo "Deploying the code"
-                       echo "Deploying version is $version"
+                       
                        sh "bash /remote.sh ${IMAGE_NAME}"
 
                    }
