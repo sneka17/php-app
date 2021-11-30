@@ -1,0 +1,39 @@
+pipeline{
+    agent any
+    tools{
+        jdk "JDK"
+        maven "Apache Maven"
+    }
+    environment{
+        IMAGE_NAME='sneka/myimage:$BUILD_NUMBER'
+    }
+    stages{
+        stage("BUILD THE DOCKER IMAGE"){
+               
+              
+               steps{
+                   script{
+                       echo "Building the docker image"
+                       echo "Deploying version is $version"
+                       withCredentials([usernamePassword(credentialsId: 'docker hub credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                       sh 'sudo docker build -t ${IMAGE_NAME} .'
+                       sh 'sudo docker login -u $USERNAME -p $PASSWORD'
+                       sh 'sudo docker push ${IMAGE_NAME}'
+                       }
+                   }
+               }
+           }
+           stage("DEPLOY"){
+               agent any
+            
+               steps{
+                   script{
+                       echo "Deploying the code"
+                       echo "Deploying version is $version"
+                       sh 'bash /remote.sh ${IMAGE_NAME}'
+
+                   }
+               }
+           }
+       }
+}
