@@ -14,7 +14,7 @@ pipeline{
                steps{
                    script{
                        echo "Building the docker image"
-                       echo "Deploying version is $version"
+       
                        withCredentials([usernamePassword(credentialsId: 'docker hub credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                        sh "sudo docker build -t ${IMAGE_NAME} ."
                        sh 'sudo docker login -u $USERNAME -p $PASSWORD'
